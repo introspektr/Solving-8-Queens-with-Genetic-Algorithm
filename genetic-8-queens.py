@@ -1,6 +1,6 @@
 # Cody Jackson
 # CS 441 Programming Assignment #2
-# 5/18/25
+# 5/18/2025
 # Solving 8-Queens Puzzle with Genetic Algorithm
 
 import random
@@ -144,15 +144,17 @@ def main():
             print(f"Solution chromosome: {highest_fitness_individual}")
             display_board(highest_fitness_individual)
             print("=" * 60)
-            # Sample the chromosome stored at population[7].
-            sample_chromosome = population[7]
+            # Sample a random chromosome from the population
+            random_index = random.randint(0, POPULATION_SIZE - 1)
+            sample_chromosome = population[random_index]
             sample_fitness = fitness_function(sample_chromosome)
             sample_chromosomes.append((generation, sample_chromosome, sample_fitness))
             break
         
-        # Sample the chromosome stored at population[7].
+        # Sample a random chromosome from the population
         if generation in sample_gens:
-            sample_chromosome = population[7]
+            random_index = random.randint(0, POPULATION_SIZE - 1)
+            sample_chromosome = population[random_index]
             sample_fitness = fitness_function(sample_chromosome)
             sample_chromosomes.append((generation, sample_chromosome, sample_fitness))
         # -------------------------------------------------- #
@@ -214,7 +216,7 @@ def main():
     print("-" * 60)
     
     # Display collected sample chromosomes (boardstates) (one per sample generation)
-    print("\nSAMPLE CHROMOSOMES COLLECTED DURING THIS RUN FROM POPULATION[7]):")
+    print("\nSAMPLE CHROMOSOMES COLLECTED RANDOMLY FROM EACH GENERATION:")
     print("=" * 60)
     for (generation, chromosome, fitness) in sample_chromosomes:
         print(f"\nSample (Generation {generation}):")

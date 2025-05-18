@@ -51,9 +51,6 @@ def select_parent(population: List[List[int]], fitnesses: List[int]) -> List[int
         current += fitnesses[i]
         if current > pick:
             return individual
-    
-    # Fallback (shouldn't normally reach here)
-    # return population[-1]
 
 def crossover(parent1: List[int], parent2: List[int]) -> Tuple[List[int], List[int]]:
     """Single-point crossover: combine genetic material from two parents."""
@@ -117,7 +114,6 @@ def main():
     
     # Define generations to collect a sample chromosome (0, 1–5, every 25th (up to 100), and every 50th (after 100)
     sample_gens = [0] + list(range(1, 6)) + list(range(25, 101, 25)) + list(range(150, MAX_GENERATIONS + 1, 50))
-    # (Note: if MAX_GENERATIONS is less than 150, the last list is empty.)
     
     # List to collect sample chromosomes (each entry is a tuple (gen, chromosome, fitness))
     sample_chromosomes = []
@@ -127,35 +123,34 @@ def main():
         # Calculate fitness for each individual
         fitnesses = [fitness_function(individual) for individual in population]
         
-        # Find best solution in this generation
-        best_solution_index = fitnesses.index(max(fitnesses))
-        best_fitness = fitnesses[best_solution_index]
-        best_individual = population[best_solution_index]
+        # Find highest fitness in this generation
+        highest_fitness_index = fitnesses.index(max(fitnesses))
+        highest_fitness = fitnesses[highest_fitness_index]
+        highest_fitness_individual = population[highest_fitness_index]
         
         # Calculate average fitness
         avg_fitness = sum(fitnesses) / len(fitnesses)
         
         # Print fitness data (best & average) for every generation
-        print(f"{generation:<12}{best_fitness:<16}{avg_fitness:.2f}")
+        print(f"{generation:<12}{highest_fitness:<16}{avg_fitness:.2f}")
         
-        # Check if we've found a perfect solution
-        if best_fitness == MAX_FITNESS and not solution_found:
+        # Check if we've found a solution
+        if highest_fitness == MAX_FITNESS and not solution_found:
             solution_found = True
             elapsed_time = time.time() - start_time
             print("\n" + "=" * 60)
             print(f"SOLUTION FOUND IN GENERATION {generation}!")
             print(f"Time elapsed: {elapsed_time:.2f} seconds")
-            print(f"Solution chromosome: {best_individual}")
-            display_board(best_individual)
+            print(f"Solution chromosome: {highest_fitness_individual}")
+            display_board(highest_fitness_individual)
             print("=" * 60)
-            # Add to the list
+            # Sample the chromosome stored at population[7].
             sample_chromosome = population[7]
             sample_fitness = fitness_function(sample_chromosome)
             sample_chromosomes.append((generation, sample_chromosome, sample_fitness))
             break
         
-        # ------------- SAMPLING FOR LATER DISPLAY ----------- #
-        # Instead of a randomly selected parent, just grab the chromosome stored at population[0] (index 0).
+        # Sample the chromosome stored at population[7].
         if generation in sample_gens:
             sample_chromosome = population[7]
             sample_fitness = fitness_function(sample_chromosome)
@@ -165,7 +160,6 @@ def main():
         # Create new generation
         new_population = []
         
-        # Elitism: keep the best 2 individuals (without using lambda)
         # Create list of (fitness, individual) pairs
         fitness_pairs = []
         for i in range(len(population)):
@@ -174,7 +168,7 @@ def main():
         # Sort in descending order by fitness
         fitness_pairs.sort(reverse=True)
         
-        # Take the top 2 individuals
+        # Elitism: keep the best 2 individuals
         elites = [individual for fitness, individual in fitness_pairs[:2]]
         new_population.extend(elites)
         
@@ -203,11 +197,11 @@ def main():
         print("\n" + "=" * 60)
         print("FINAL RESULTS (NO PERFECT SOLUTION FOUND):")
         final_fitnesses = [fitness_function(individual) for individual in population]
-        best_solution_index = final_fitnesses.index(max(final_fitnesses))
-        best_final = population[best_solution_index]
-        print(f"Best Fitness Achieved: {final_fitnesses[best_solution_index]}")
-        print(f"Best Chromosome: {best_final}")
-        display_board(best_final)
+        best_fitness_index = final_fitnesses.index(max(final_fitnesses))
+        best_fitness = population[best_fitness_index]
+        print(f"Best Fitness Achieved: {final_fitnesses[best_fitness_index]}")
+        print(f"Best Chromosome: {best_fitness}")
+        display_board(best_fitness)
         print("=" * 60)
     
     # Always show the final population statistics
